@@ -37,7 +37,8 @@ export class BoardMotion {
     start(event) {
         if (this.busy || !event.isPrimary || event.button !== 0)
             return;
-        const id = event.target.closest('[data-id]')?.getAttribute('data-id');
+        const target = event.target.closest('[data-select-id], [data-id]');
+        const id = target?.getAttribute('data-select-id') ?? target?.getAttribute('data-id');
         if (!id)
             return;
         event.preventDefault();

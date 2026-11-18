@@ -55,7 +55,7 @@ h2 { margin: 8px 0; font-size: 23px; }
   box-shadow: 0 7px 0 #ab7fc3, 0 12px 0 #f0d9ef, 0 22px 38px -15px #9c69b657, inset 0 3px 1px #fff9;
 }
 #board { display: block; width: 100%; border-radius: 17px; background: var(--board); touch-action: none; user-select: none; }
-.piece, .bar { cursor: grab; }
+.piece, .bar, .dock[data-select-id] { cursor: grab; }
 #board.dragging, #board.dragging * { cursor: grabbing; }
 /* De PNG-afwerking en de geometrische aanraakvorm bewegen als één SVG-groep. */
 .piece-art { pointer-events: none; }

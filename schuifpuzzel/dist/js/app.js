@@ -18,7 +18,8 @@ const motion = new BoardMotion(board, () => state, id => { selected = id; render
 function render() {
     if (!artworkReady)
         return;
-    const focused = document.activeElement?.closest('[data-id]')?.getAttribute('data-id');
+    const focusedElement = document.activeElement?.closest('[data-select-id], [data-id]');
+    const focused = focusedElement?.getAttribute('data-select-id') ?? focusedElement?.getAttribute('data-id');
     renderBoard(board, state, selected);
     if (focused)
         board.querySelector(`[data-id="${focused}"]`)?.focus();
@@ -46,10 +47,10 @@ board.addEventListener('keydown', event => {
     if (motion.busy)
         return;
     if (event.key === 'Enter' || event.key === ' ') {
-        const el = event.target.closest('[data-id]');
+        const el = event.target.closest('[data-select-id], [data-id]');
         if (el) {
             event.preventDefault();
-            selected = el.getAttribute('data-id');
+            selected = el.getAttribute('data-select-id') ?? el.getAttribute('data-id');
             render();
         }
         return;

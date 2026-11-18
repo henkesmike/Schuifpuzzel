@@ -15,6 +15,12 @@ export function renderBoard(board:SVGSVGElement,s:State,selected:string|null):vo
   DOCKS.forEach((d,i)=>{
     const carrying=s.support===(i===0?'start':'finish');
     const g=svgElement('g',{transform:`translate(${d.x*100},${d.y*100})`,class:`dock ${i===1?'destination':''} ${carrying?'carrying':''}`,role:'img','aria-label':`${i===0?'Bovenste':'Onderste'} vaste houder${carrying?', met staaf':''}`});
+    // De hele bezette houder is een aangrijppunt voor de staaf, ook naast de uitsparing.
+    // Een aparte selectie-eigenschap voorkomt dubbele data-id's voor het bewegende staafobject.
+    if(carrying){
+      g.setAttribute('data-select-id','bar');g.setAttribute('role','button');g.setAttribute('tabindex','0');
+      g.append(svgElement('rect',{x:0,y:0,width:200,height:100,fill:'transparent'}));
+    }
     g.append(svgElement('image',{
       href:`./assets/dock-${i===0?'right':'left'}-${carrying?'violet':'cream'}.png`,
       x:0,y:0,width:200,height:100,class:'piece-art'
@@ -28,7 +34,7 @@ export function renderBoard(board:SVGSVGElement,s:State,selected:string|null):vo
   s.pieces.forEach(p=>board.append(drawPiece(p,selectedIds.includes(p.id),carriers.includes(p.id))));
   const position=barPixels(s);
   const bar=svgElement('g',{'data-id':'bar',role:'button',tabindex:0,'aria-label':'Staaf selecteren',class:`bar ${selected==='bar'||(selectionIsCoupled&&carriers.length)?'selected':''}`,transform:`translate(${position.x},${position.y})`});
-  bar.append(svgElement('rect',{x:0,y:40,width:BAR_WIDTH,height:20,rx:10,class:'bar-hit'}));
+  bar.append(svgElement('rect',{x:0,y:0,width:BAR_WIDTH,height:100,class:'bar-hit'}));
   bar.append(svgElement('image',{href:'./assets/rod-pink.png',x:0,y:0,width:BAR_WIDTH,height:100,class:'piece-art'}));
   bar.append(svgElement('rect',{x:0,y:40,width:BAR_WIDTH,height:20,rx:10,class:'bar-outline'}));
   board.append(bar);
@@ -37,9 +43,9 @@ function drawPiece(p:Piece,selected:boolean,carrying:boolean):SVGElement {
   const [w,h]=size(p);
   const group=svgElement('g',{transform:`translate(${p.x*100},${p.y*100})`,'data-id':p.id,role:'button',tabindex:0,'aria-label':`Blok ${p.id}${carrying?', gekoppeld door de staaf':''}`,class:`piece ${selected?'selected':''} ${carrying?'carrying':''}`});
   const outline=pieceOutline(p,w*100,h*100);
-  // De glans en smalle bevel zijn vooraf gerenderd. De spelcode blijft daardoor klein;
-  // de geometrische omtrek blijft verantwoordelijk voor aanraken en selectieranden.
-  group.append(svgElement('path',{d:outline,fill:'transparent',class:'piece-hit'}));
+  // Het volledige rastergebied is aanklikbaar, inclusief uitsparingen en randmarges.
+  // De zichtbare omtrek wordt alleen voor de selectierand gebruikt, niet voor hitdetectie.
+  group.append(svgElement('rect',{x:0,y:0,width:w*100,height:h*100,fill:'transparent',class:'piece-hit'}));
   group.append(svgElement('image',{
     href:`./assets/${p.shape}-${carrying?'violet':'mint'}.png`,
     x:0,y:0,width:w*100,height:h*100,class:'piece-art'

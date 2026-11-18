@@ -77,3 +77,9 @@ De app werkt zonder aanmelding, serverdatabase of gekoppelde accounts. De gepubl
 ## Deze GitHub-export
 
 Dit project staat in de submap `schuifpuzzel`. Voer de ontwikkelcommando’s vanuit die map uit. De broncode, tests, grafische bronbestanden en direct te serveren map `dist` zijn opgenomen. `node_modules`, de Sites-hostingconfiguratie, de dubbele broncode-zip en de eerdere GIF-voorbeelden zijn weggelaten. De broncodedownload op de bestaande website blijft beschikbaar.
+
+## Aanklikgebied en richting
+
+Een blok wordt over zijn volledige rechthoekige rastergebied geselecteerd, ook in een uitsparing of randmarge. De staaf is over zijn hele afbeeldingsgebied aanklikbaar; een bezette vaste houder is eveneens een aangrijppunt voor de staaf. Klikken in een lege uitsparing kan daardoor hetzelfde als klikken op het zichtbare materiaal.
+
+Bij een gekoppeld paar bepalen bord en richting de actie, onafhankelijk van het aangeraakte onderdeel: als alleen de staaf kan worden doorgegeven gebeurt dat; anders schuift het paar met staaf als daar ruimte voor is; anders blijft alles staan. De vaste houders kunnen niet verschuiven. De SVG gebruikt aparte aanklikrechthoeken en visuele contouren, zodat een fraaiere afbeelding het aangrijpgebied niet kleiner maakt.

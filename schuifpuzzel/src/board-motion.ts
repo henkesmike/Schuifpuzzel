@@ -29,7 +29,8 @@ export class BoardMotion {
  }
  private start(event:PointerEvent):void {
   if(this.busy||!event.isPrimary||event.button!==0)return;
-  const id=(event.target as Element).closest('[data-id]')?.getAttribute('data-id');if(!id)return;
+  const target=(event.target as Element).closest('[data-select-id], [data-id]');
+  const id=target?.getAttribute('data-select-id')??target?.getAttribute('data-id');if(!id)return;
   event.preventDefault();this.unlockSound();this.select(id);
   this.gesture={pointer:event.pointerId,start:this.point(event),axis:null,stops:dragStops(this.state(),id),nodes:this.nodes(id),movingNodes:[],x:0,y:0};
   this.board.setPointerCapture(event.pointerId);this.board.classList.add('dragging');

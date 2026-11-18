@@ -20,7 +20,8 @@ const sound=new PuzzleSound(document.querySelector<HTMLButtonElement>('#sound')!
 const motion=new BoardMotion(board,()=>state,id=>{selected=id;render();},play,()=>sound.unlock());
 function render():void {
   if(!artworkReady)return;
-  const focused=(document.activeElement as Element|null)?.closest('[data-id]')?.getAttribute('data-id');
+  const focusedElement=(document.activeElement as Element|null)?.closest('[data-select-id], [data-id]');
+  const focused=focusedElement?.getAttribute('data-select-id')??focusedElement?.getAttribute('data-id');
   renderBoard(board,state,selected);
   if(focused) board.querySelector<SVGElement>(`[data-id="${focused}"]`)?.focus();
   document.querySelector('#move-count')!.textContent=String(state.moves).padStart(2,'0');
@@ -43,7 +44,7 @@ function play(moves:Move[]):void {
 }
 board.addEventListener('keydown',event=>{
   if(motion.busy)return;
-  if(event.key==='Enter'||event.key===' ') {const el=(event.target as Element).closest('[data-id]');if(el){event.preventDefault();selected=el.getAttribute('data-id');render();}return;}
+  if(event.key==='Enter'||event.key===' ') {const el=(event.target as Element).closest('[data-select-id], [data-id]');if(el){event.preventDefault();selected=el.getAttribute('data-select-id')??el.getAttribute('data-id');render();}return;}
   const direction:Record<string,[number,number]>={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
   const d=direction[event.key];if(!d||!selected)return;
   event.preventDefault();const move=interactionMoves(state,selected).find(m=>Math.sign(m.dx)===d[0]&&Math.sign(m.dy)===d[1]);if(move)motion.perform(selected,move);

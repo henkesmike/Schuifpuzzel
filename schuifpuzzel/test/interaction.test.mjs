@@ -45,3 +45,20 @@ test('overdracht naar onderste houder werkt ook door een dragend blok te slepen'
 test('een los blok geeft geen staaf elders op het bord door',()=>{
  const s=triple();assert.ok(interactionMoves(s,'B').every(m=>m.kind==='slide'));
 });
+test('een niet-passend buurblok blokkeert zowel staaf als gekoppelde blokken',()=>{
+ const s=triple();
+ // Links van het paar staat het gewone blok B: geen vrije plek en geen uitsparing.
+ for(const id of ['J','E','bar']){
+  assert.equal(interactionMoves(s,id).some(m=>m.dx<0&&m.dy===0),false);
+  assert.equal(dragStops(s,id).some(stop=>stop.x<0),false);
+ }
+});
+test('een vrije buurpositie laat het paar horizontaal schuiven zonder overdracht',()=>{
+ const s=triple();place(s,'G',4,0);assert.ok(validState(s));
+ for(const id of ['J','E','bar']){
+  const moves=interactionMoves(s,id).filter(m=>m.dx>0&&m.dy===0);
+  assert.equal(moves.length,1);assert.equal(moves[0].kind,'slide');
+  const next=applyMove(s,moves[0]);assert.deepEqual(next.support,s.support);
+  for(const piece of ['J','E'])assert.equal(next.pieces.find(p=>p.id===piece).x,s.pieces.find(p=>p.id===piece).x+1);
+ }
+});
