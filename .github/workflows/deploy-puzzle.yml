@@ -1,0 +1,48 @@
+name: Deploy staafpuzzel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'schuifpuzzel/**'
+      - '.github/workflows/deploy-puzzle.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: puzzle-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: schuifpuzzel/package-lock.json
+      - name: Install and test
+        working-directory: schuifpuzzel
+        run: |
+          npm ci
+          npm test
+      - name: Prepare SSH and verify server identity
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/puzzle_deploy
+          chmod 600 ~/.ssh/puzzle_deploy
+          ssh-keyscan -t ed25519 -H 204.168.132.39 > ~/.ssh/known_hosts
+          ssh-keyscan -t ed25519 204.168.132.39 2>/dev/null | ssh-keygen -lf - | grep -F 'SHA256:5Znq7rDFFOc/UnNOV2c+bNg0Tc61F+kUGkEV68PzZ1k'
+      - name: Publish static website
+        run: |
+          rsync -az --delete -e 'ssh -i ~/.ssh/puzzle_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes' schuifpuzzel/dist/ deploy@204.168.132.39:/var/www/puzzle/
