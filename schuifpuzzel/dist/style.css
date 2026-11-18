@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap');
+
+/* Een rustige omlijsting; het bord krijgt de meeste ruimte op elk scherm. */
+:root {
+  --ink: #624779;
+  --muted: #a18aa8;
+  --board: #f7eaf5;
+  --paper: #fff8f5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: radial-gradient(ellipse at 5% 15%, #ffe7db, transparent 50%),
+    radial-gradient(ellipse at 95% 60%, #eae1ff, transparent 50%), var(--paper);
+  min-height: 100svh;
+}
+header, footer { max-width: 920px; margin: auto; padding: 24px; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: #78558e;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #eab5ee, #ad78d4);
+  color: #fff;
+  box-shadow: 0 3px 0 #9963bd;
+}
+.brand-sub { border-left: 1px solid #dfcce2; padding-left: 11px; font-size: 9px; }
+main { width: min(100% - 40px, 640px); margin: 10px auto 24px; }
+.game-top { display: flex; align-items: center; justify-content: space-between; margin: 0 6px 20px; }
+h1 { margin: 0; font-size: clamp(25px, 5vw, 35px); font-weight: 900; letter-spacing: -1px; }
+h2 { margin: 8px 0; font-size: 23px; }
+.counter { display: flex; flex-direction: column; align-items: center; min-width: 54px; }
+.counter span { font-size: 26px; font-weight: 900; line-height: 1.1; color: #9e71ba; }
+.counter small { font-size: 8px; letter-spacing: 1.5px; color: var(--muted); margin-top: 3px; }
+
+/* De ondergrond binnen het bord is overal dezelfde egale kleur. */
+.board-frame {
+  padding: 16px;
+  background: linear-gradient(145deg, #e4c5f2, #bd94d6);
+  border: 2px solid #f8e6ff;
+  border-radius: 29px;
+  box-shadow: 0 7px 0 #ab7fc3, 0 12px 0 #f0d9ef, 0 22px 38px -15px #9c69b657, inset 0 3px 1px #fff9;
+}
+#board { display: block; width: 100%; border-radius: 17px; background: var(--board); touch-action: none; user-select: none; }
+.piece, .bar { cursor: grab; }
+#board.dragging, #board.dragging * { cursor: grabbing; }
+/* De PNG-afwerking en de geometrische aanraakvorm bewegen als één SVG-groep. */
+.piece-art { pointer-events: none; }
+.piece-hit, .bar-hit { fill: transparent; }
+.bar-outline { fill: none; stroke: transparent; pointer-events: none; }
+.asset-outline { fill: none; stroke: transparent; pointer-events: none; }
+.piece.carrying .asset-outline { stroke: #edd6ff; stroke-width: 1.2; }
+.piece.selected .asset-outline, .piece:focus-visible .asset-outline {
+  stroke: #fff0ae; stroke-width: 2.2;
+}
+.bar.selected .bar-outline, .bar:focus-visible .bar-outline { stroke: #fff0ae; stroke-width: 2.5; }
+.goal-star { fill: #fff2a7; stroke: #d9a052; stroke-width: 1; filter: drop-shadow(0 1px 1px #b4764055); }
+
+.toolbar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 28px 0 12px; }
+button {
+  min-height: 44px;
+  padding: 10px 17px;
+  border: 1px solid #e7cee4;
+  border-radius: 13px;
+  background: #fff8fc;
+  color: #80558f;
+  font: 800 13px 'Nunito', system-ui, sans-serif;
+  box-shadow: 0 2px 0 #ead5e7;
+  cursor: pointer;
+}
+button:hover { background: #f5e5f4; }
+button:active { transform: translateY(1px); box-shadow: 0 1px 0 #ead5e7; }
+button:disabled { opacity: .4; cursor: default; }
+button:focus-visible, a:focus-visible { outline: 3px solid #d88ab2; outline-offset: 4px; }
+#victory { padding: 20px; margin-top: 24px; text-align: center; border: 2px solid white; border-radius: 20px; background: linear-gradient(135deg, #ffedca, #f5dcf9); box-shadow: 0 5px 0 #e9c8e6; }
+#victory[hidden] { display: none; }
+#victory > span { font-size: 32px; color: #dfa949; }
+#victory p { margin: 6px 0; }
+footer { display: flex; justify-content: center; gap: 18px; color: var(--muted); font-size: 10px; }
+footer a { color: inherit; text-underline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+dialog { max-width: min(90vw, 420px); padding: 26px; border: 1px solid #ebcfeb; border-radius: 20px; color: var(--ink); background: var(--paper); box-shadow: 0 16px 80px #9862a433; }
+dialog::backdrop { background: #62477966; }
+dialog p { font-size: 14px; }
+dialog > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+#confirm-reset { background: #b483cc; color: white; }
+@media (max-width: 680px) {
+  header { padding: 18px 20px; }
+  main { margin-top: 8px; width: min(100% - 24px, 600px); }
+  .game-top { margin-bottom: 16px; }
+  .board-frame { padding: 10px; border-radius: 23px; }
+  .toolbar { gap: 8px; margin-top: 25px; }
+  button { padding: 9px 13px; font-size: 12px; }
+  footer { padding-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* De sterren mogen buiten het bord vliegen, maar blokkeren nooit de bediening. */
+#victory-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 100;
+}
+#victory-canvas[hidden] { display: none; }
+#celebration-message {
+  position: fixed; left: 50%; z-index: 101;
+  width: min(360px, calc(100vw - 36px));
+  padding: 16px 22px 22px; text-align: center;
+  border: 2px solid #fff7d7; border-radius: 28px;
+  background: linear-gradient(145deg, #fff8e8f7, #f1d8fff5);
+  box-shadow: 0 6px 0 #bc8bd6, 0 20px 60px #8655a33b;
+  opacity: 0; transform: translate(-50%, -40%) scale(.84);
+  transition: opacity .25s ease, transform .45s cubic-bezier(.2,.9,.3,1.15);
+  pointer-events: none;
+}
+#celebration-message.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+#celebration-message strong { display: block; font-size: clamp(25px, 6vw, 35px); line-height: 1.2; color: #825098; }
+#celebration-message > span:last-child { display: block; margin-top: 8px; color: #9d7aa8; font-size: 14px; }
+.celebration-star { display: block; color: #edb83d; font-size: 50px; line-height: 1.15; text-shadow: 0 2px white, 0 0 20px #fff2b0; }
+@media (prefers-reduced-motion: reduce) {
+  #celebration-message { transition: none; transform: translate(-50%, -50%); }
+}
+
+#loading-artwork { text-align: center; color: var(--muted); font-size: 13px; }
+#loading-artwork[hidden] { display: none; }

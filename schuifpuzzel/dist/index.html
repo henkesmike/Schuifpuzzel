@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#bd94d6">
+  <meta name="description" content="De Staafpuzzel — ontdek het zelf.">
+  <title>De Staafpuzzel</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./js/app.js"></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./"><span class="brand-icon" aria-hidden="true">▰</span> HENKES <span class="brand-sub">PUZZELS</span></a>
+  </header>
+  <main>
+    <section class="game-area" aria-label="De Staafpuzzel">
+      <div class="game-top">
+        <h1>De Staafpuzzel</h1>
+        <div class="counter" aria-label="Aantal zetten"><span id="move-count">00</span><small>ZETTEN</small></div>
+      </div>
+      <p id="loading-artwork" role="status">Puzzel laden…</p>
+      <div class="board-frame">
+        <svg id="board" aria-busy="true" viewBox="0 0 500 400" aria-label="Puzzelbord met elf blokken en een roze staaf"></svg>
+      </div>
+      <div class="toolbar">
+        <button id="undo" disabled title="Laatste zet terug">↶ <span>Terug</span></button>
+        <button id="reset" disabled>↻ <span>Opnieuw</span></button>
+        <button id="sound" aria-pressed="true">♫ Geluid aan</button>
+      </div>
+      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+      <div id="victory" hidden>
+        <span aria-hidden="true">✦</span>
+        <h2>Mooi opgelost!</h2>
+        <p>De ster is binnen.</p>
+      </div>
+    </section>
+  </main>
+  <canvas id="victory-canvas" hidden aria-hidden="true"></canvas>
+  <div id="celebration-message" aria-hidden="true">
+    <span class="celebration-star">✦</span>
+    <strong>Puzzel gekraakt!</strong>
+    <span>Dat heb je mooi gedaan.</span>
+  </div>
+  <footer><span>Een puzzel van Henkes</span><a href="https://github.com/henkesmike/Schuifpuzzel/tree/main/schuifpuzzel">Broncode</a></footer>
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <h2 id="reset-title">Een nieuw begin?</h2>
+    <p>De puzzel keert terug naar de beginstand.</p>
+    <div><button id="cancel-reset">Verder spelen</button><button id="confirm-reset">Opnieuw beginnen</button></div>
+  </dialog>
+</body>
+</html>
